@@ -3,6 +3,18 @@ const bots = require("./src/botsData");
 const shuffle = require("./src/shuffle");
 
 // include and initialize the rollbar library with your access token
+
+const playerRecord = {
+  wins: 0,
+  losses: 0,
+};
+const app = express();
+
+app.use(express.json());
+
+
+app.use(express.static(`${__dirname}/public`));
+
 var Rollbar = require('rollbar')
 var rollbar = new Rollbar({
   accessToken: 'e644fa7f73694a9ea217da14f36fdd37',
@@ -13,19 +25,9 @@ var rollbar = new Rollbar({
 // record a generic message and send it to Rollbar
 rollbar.log('Hello world!')
 
-const playerRecord = {
-  wins: 0,
-  losses: 0,
-};
-const app = express();
-
-app.use(express.json());
-
-app.use(express.static(`${__dirname}/public`));
-
 // Add up the total health of all the robots
 const calculateTotalHealth = (robots) =>
-  robots.reduce((total, { health }) => total + health, 0);
+robots.reduce((total, { health }) => total + health, 0);
 
 // Add up the total damage of all the attacks of all the robots
 const calculateTotalAttack = (robots) =>
@@ -87,7 +89,7 @@ app.post("/api/duel", (req, res) => {
       res.status(200).send("You lost!");
     } else {
       rollbar.info('A player has won a match')
-      playerRecord.losses += 1;
+      playerRecord.wins += 1;
       res.status(200).send("You won!");
     }
   } catch (error) {

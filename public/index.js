@@ -23,6 +23,8 @@ chooseHeader.classList.add("hide");
 yourDuoHeader.classList.add("hide");
 compDuoHeader.classList.add("hide");
 
+baseURL = 'http://ec2-54-211-63-111.compute-1.amazonaws.com/' || 'http://localhost:3000/';
+
 const makeRobotChoiceCard = (bot) => {
   return `
         <div class="bot-card outline">
@@ -118,7 +120,7 @@ const putBotBack = (id) => {
 };
 
 const drawFive = () => {
-  axios.get("http://localhost:3000/api/robots/shuffled").then((res) => {
+  axios.get(`${baseURL}/api/robots/shuffled`).then((res) => {
     const shuffledBots = res.data;
     choices = shuffledBots.slice(0, 5);
     compDuo = shuffledBots.slice(6, 8);
@@ -139,7 +141,7 @@ const duel = () => {
     .querySelectorAll(".bot-btn")
     .forEach((btn) => btn.classList.add("hide"));
   setTimeout(() => {
-    axios.post("/api/duel", { compDuo, playerDuo }).then(({ data }) => {
+    axios.post(`${baseURL}/api/duel`, { compDuo, playerDuo }).then(({ data }) => {
       resultsText.textContent = data;
       playAgainBtn.classList.remove("hide");
       getPlayerStats();
@@ -161,14 +163,14 @@ const reset = () => {
 };
 
 const getPlayerStats = () => {
-  axios.get("http://localhost:3000/api/player").then(({ data: { wins, losses } }) => {
+  axios.get(`${baseURL}/api/player`).then(({ data: { wins, losses } }) => {
     winsText.textContent = `Wins: ${wins}`;
     lossesTest.textContent = `Losses: ${losses}`;
   });
 };
 
 const getAllBots = () => {
-  axios.get("http://localhost:3000/api/robots").then(({ data }) => {
+  axios.get(`${baseURL}/api/robots`).then(({ data }) => {
     allBotsDiv.innerHTML = "";
 
     data.forEach((bot) => {
